@@ -1,15 +1,37 @@
 import React from 'react';
 import {useForm} from "react-hook-form";
+import {FormError} from "../components/form-error";
+import {gql, useMutation} from "@apollo/client";
+
+const LOGIN_MUTATION = gql`
+  mutation SomeMutation($email:String!, $password:String!) {
+    login(input: {
+      email:$email,
+      password:$password
+    }) {
+      ok,
+      token,
+      error
+    }
+  }
+`;
 
 interface ILoginForm {
-  email?: string,
-  password?: string,
+  email: string,
+  password: string,
 }
 
 export const Login = () => {
   const { register, getValues, formState: { errors }, handleSubmit } = useForm<ILoginForm>();
+  const [loginMutation, {loading, error, data}] = useMutation(LOGIN_MUTATION);
   const onSubmit = () => {
-    console.log(getValues())
+    const { email, password } = getValues();
+    loginMutation({
+      variables: {
+        email,
+        password
+      }
+    })
   }
   return <span className="h-screen flex items-center justify-center bg-gray-800">
     <div className="bg-white w-full max-w-lg py-7 rounded-lg text-center">
@@ -22,9 +44,7 @@ export const Login = () => {
                className="input mb-3"
         />
         {errors.email?.message && (
-          <span className="font-medium text-red-500">
-            {errors.email?.message}
-          </span>
+          <FormError errorMessage={errors.email?.message}/>
         )}
         <input { ...register('password', { required: 'Password is required', minLength: 6 }) }
                type="password"
@@ -32,14 +52,10 @@ export const Login = () => {
                placeholder="Password"
                className="input mb-3"/>
         {errors.password?.type === 'minLength' && (
-          <span className="font-medium text-red-500">
-            Password must be more than 6 chars.
-          </span>
+          <FormError errorMessage="Password must be more than 6 chars."/>
         )}
         {errors.password?.message && (
-          <span className="font-medium text-red-500">
-            {errors.password?.message}
-          </span>
+          <FormError errorMessage={errors.password?.message}/>
         )}
         <button className="btn">Log In</button>
       </form>
