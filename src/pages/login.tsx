@@ -2,9 +2,10 @@ import React from 'react';
 import {useForm} from "react-hook-form";
 import {FormError} from "../components/form-error";
 import {gql, useMutation} from "@apollo/client";
+import {LoginMutation, LoginMutationVariables} from "../__generated__/LoginMutation";
 
 const LOGIN_MUTATION = gql`
-  mutation SomeMutation($email:String!, $password:String!) {
+  mutation LoginMutation($email:String!, $password:String!) {
     login(input: {
       email:$email,
       password:$password
@@ -23,7 +24,9 @@ interface ILoginForm {
 
 export const Login = () => {
   const { register, getValues, formState: { errors }, handleSubmit } = useForm<ILoginForm>();
-  const [loginMutation, {loading, error, data}] = useMutation(LOGIN_MUTATION);
+  const [loginMutation, {loading, error, data}] = useMutation<
+    LoginMutation, LoginMutationVariables
+    >(LOGIN_MUTATION);
   const onSubmit = () => {
     const { email, password } = getValues();
     loginMutation({
@@ -33,7 +36,8 @@ export const Login = () => {
       }
     })
   }
-  return <span className="h-screen flex items-center justify-center bg-gray-800">
+
+  return (<span className="h-screen flex items-center justify-center bg-gray-800">
     <div className="bg-white w-full max-w-lg py-7 rounded-lg text-center">
       <h3 className="text-3xl text-gray-800">Log In</h3>
       <form onSubmit={handleSubmit(onSubmit)} className="grid gap-2 mt-5 px-5">
@@ -60,47 +64,5 @@ export const Login = () => {
         <button className="btn">Log In</button>
       </form>
     </div>
-  </span>
+  </span>)
 }
-//
-// import React from 'react';
-// import {useForm} from "react-hook-form";
-//
-
-//
-// export const LoggedOutRouter = () => {
-//   const { register, watch, handleSubmit, formState: { errors } } = useForm<IForm>();
-//
-//   const onSubmit = () => {
-//     console.log(watch())
-//   }
-//   const onInvalid = () => {
-//     console.log('not valid ', errors)
-//   }
-//   return (
-//     <div>
-//       <h1>Logged Out</h1>
-//       <form onSubmit={handleSubmit(onSubmit, onInvalid)}>
-//         <div>
-//           <input
-//             {...register('email', {
-//               required: 'this is required',
-//               validate: (email:string) => email.includes('@gmail.com')})}
-//             type="email"
-//             placeholder="email"
-//           />
-//           {errors.email?.message && <span className="font-bold text-red-600">{errors.email?.message}</span>}
-//           {errors.email?.type === 'validate' && <span className="font-bold text-red-600">Only Gmail</span>}
-//         </div>
-//         <div>
-//           <input
-//             {...register('password', {required: true})}
-//             type="password"
-//             placeholder="password"
-//           />
-//         </div>
-//         <button className="bg-yellow-300 text-white">Login</button>
-//       </form>
-//     </div>
-//   );
-// }
