@@ -1,16 +1,56 @@
 import React from 'react';
+import {useForm} from "react-hook-form";
+
+interface ILoginForm {
+  email?: string,
+  password?: string,
+}
 
 export const Login = () => {
-  return <span>Login</span>
+  const { register, getValues, formState: { errors }, handleSubmit } = useForm<ILoginForm>();
+  const onSubmit = () => {
+    console.log(getValues())
+  }
+  return <span className="h-screen flex items-center justify-center bg-gray-800">
+    <div className="bg-white w-full max-w-lg py-7 rounded-lg text-center">
+      <h3 className="text-3xl text-gray-800">Log In</h3>
+      <form onSubmit={handleSubmit(onSubmit)} className="grid gap-2 mt-5 px-5">
+        <input { ...register('email', { required: 'Email is required' }) }
+               type="email"
+               required
+               placeholder="Email"
+               className="input mb-3"
+        />
+        {errors.email?.message && (
+          <span className="font-medium text-red-500">
+            {errors.email?.message}
+          </span>
+        )}
+        <input { ...register('password', { required: 'Password is required', minLength: 6 }) }
+               type="password"
+               required
+               placeholder="Password"
+               className="input mb-3"/>
+        {errors.password?.type === 'minLength' && (
+          <span className="font-medium text-red-500">
+            Password must be more than 6 chars.
+          </span>
+        )}
+        {errors.password?.message && (
+          <span className="font-medium text-red-500">
+            {errors.password?.message}
+          </span>
+        )}
+        <button className="btn">Log In</button>
+      </form>
+    </div>
+  </span>
 }
 //
 // import React from 'react';
 // import {useForm} from "react-hook-form";
 //
-// interface IForm {
-//   email: string,
-//   password: string,
-// }
+
 //
 // export const LoggedOutRouter = () => {
 //   const { register, watch, handleSubmit, formState: { errors } } = useForm<IForm>();
