@@ -7,6 +7,7 @@ import logo from '../images/logo.svg';
 import {Link} from "react-router-dom";
 import {Button} from "../components/button";
 import Helmet from 'react-helmet';
+import {isLoggedInVar} from "../apollo";
 
 const LOGIN_MUTATION = gql`
   mutation LoginMutation($loginInput: LoginInput!) {
@@ -30,7 +31,8 @@ export const Login = () => {
   const onCompleted = (data: LoginMutation) => {
     const { login: {ok, token} } = data;
     if (ok) {
-      console.log(token)
+      console.log(token);
+      isLoggedInVar(true);
     }
   };
 
@@ -61,7 +63,7 @@ export const Login = () => {
         <img src={logo} className='w-52 mb-10' alt="logo"/>
         <h4 className='w-full font-medium text-left text-3xl mb-5'>Welcome back</h4>
         <form onSubmit={handleSubmit(onSubmit)} className="grid gap-2 mt-5 w-full mb-5">
-          <input { ...register('email', { required: 'Email is required' }) }
+          <input { ...register('email', { required: 'Email is required', pattern: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/ }) }
                  type="email"
                  required
                  placeholder="Email"
@@ -69,6 +71,9 @@ export const Login = () => {
           />
           {errors.email?.message && (
             <FormError errorMessage={errors.email?.message}/>
+          )}
+          {errors.email?.message === 'pattern' && (
+            <FormError errorMessage="Please enter a valid email"/>
           )}
           <input { ...register('password', { required: 'Password is required', minLength: 6 }) }
                  type="password"
