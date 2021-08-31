@@ -6,6 +6,7 @@ import {LoginMutation, LoginMutationVariables} from "../__generated__/LoginMutat
 import logo from '../images/logo.svg';
 import {Link} from "react-router-dom";
 import {Button} from "../components/button";
+import Helmet from 'react-helmet';
 
 const LOGIN_MUTATION = gql`
   mutation LoginMutation($loginInput: LoginInput!) {
@@ -55,6 +56,7 @@ export const Login = () => {
 
   return (
     <div className="h-screen flex items-center flex-col mt-10 lg:mt-28">
+      <Helmet><title>Login | Delivery</title></Helmet>
       <div className='w-full max-w-screen-sm flex flex-col px-5 items-center'>
         <img src={logo} className='w-52 mb-10' alt="logo"/>
         <h4 className='w-full font-medium text-left text-3xl mb-5'>Welcome back</h4>
