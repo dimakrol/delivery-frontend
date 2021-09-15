@@ -6,8 +6,9 @@ import {LoginMutation, LoginMutationVariables} from "../__generated__/LoginMutat
 import logo from '../images/logo.svg';
 import {Link} from "react-router-dom";
 import {Button} from "../components/button";
-import Helmet from 'react-helmet';
-import {isLoggedInVar} from "../apollo";
+import { Helmet } from 'react-helmet-async';
+import {authToken, isLoggedInVar} from "../apollo";
+import {LOCALSTORAGE_TOKEN} from "../constants";
 
 const LOGIN_MUTATION = gql`
   mutation LoginMutation($loginInput: LoginInput!) {
@@ -30,8 +31,9 @@ export const Login = () => {
   });
   const onCompleted = (data: LoginMutation) => {
     const { login: {ok, token} } = data;
-    if (ok) {
-      console.log(token);
+    if (ok && token) {
+      localStorage.setItem(LOCALSTORAGE_TOKEN, token);
+      authToken(token);
       isLoggedInVar(true);
     }
   };

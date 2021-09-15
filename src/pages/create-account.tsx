@@ -5,7 +5,7 @@ import {gql, useMutation} from "@apollo/client";
 import logo from '../images/logo.svg';
 import {Link, useHistory} from "react-router-dom";
 import {Button} from "../components/button";
-import Helmet from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 import {UserRole} from "../__generated__/globalTypes";
 import {createAccountMutation, createAccountMutationVariables} from "../__generated__/createAccountMutation";
 
@@ -43,6 +43,7 @@ export const CreateAccount = () => {
   const onCompleted = (data: createAccountMutation) => {
     const {createAccount: {ok}} = data;
     if(ok) {
+      alert('Account Created! Log in now!')
       history.push('/login');
     }
   }
